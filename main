@@ -91,17 +91,17 @@ public:
     void addProduct(int id, string name, double price, int quantity)
     {
         Product *newProduct = new Product(id, name, price, quantity);
-		//Node* newNode = new Node(newProduct); create a Node using the product 
+	Node* newNode = new Node(newProduct); //create a Node using the product 
         if (head == nullptr)
         {
-            head = newProduct; //head = newNode
-            tail = newProduct;	//tail = newNode
+            head = newNode
+            tail = newNode
         }
         else
         {
-            tail->next = newProduct; //tail.setNext = newNode
-            newProduct->prev = tail; //newNode.setNext = tail
-            tail = newProduct; //tail = newNode
+            tail.setNext = newNode;
+            newNode.setNext = tail;
+            tail = newNode;
         }
     }
 
