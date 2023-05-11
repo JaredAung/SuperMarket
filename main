@@ -1,0 +1,410 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <iomanip>
+
+using namespace std;
+
+void printMenu()
+{
+    cout << "Welcome to Supermarket Inventory Manager\n\n";
+    cout << "1. Display inventory\n";
+    cout << "2. Add product\n";
+    cout << "3. Remove product\n";
+    cout << "4. Update price\n";
+    cout << "5. Update quantity\n";
+    cout << "6. Search product\n";
+    cout << "0. Quit\n";
+}
+
+// Product class represents a single product in the inventory
+class Product
+{
+public:
+    string name;
+    int id;
+    double price;
+    int quantity;
+
+    Product(int id, string name, double price, int quantity)
+    {
+        this->id = id;
+        this->name = name;
+        this->price = price;
+        this->quantity = quantity;
+
+    }
+
+    // Print each product details
+    void print()
+    {
+        cout << "( " << left << setw(2) << id << " )\t";
+        cout << left << setw(30) << name << "\t";
+        cout << right << setw(5) << fixed << setprecision(2) << "$" << price << "\t";
+        cout << right << setw(8) << quantity << endl;
+    }
+	
+};
+
+class Node
+{
+public: 
+	Node* next;
+	Node* prev;
+	Product product;
+	
+	Node(Product newProduct){
+		product = newProduct;
+		prev = nullptr;
+		next = nullptr;
+	}
+  void setNext(Node* input){
+  	(*this).next = input;
+  }
+  void setPrev(Node* input){
+    (*this).prev = input;
+   }
+  Node* getNext(){
+    return (*this).next;
+  }
+  Node* getPrev(){
+    return (*this).prev;
+};
+
+// Inventory class manages the list of products using a linked list
+class Inventory
+{
+private:
+Node* head;
+Node* tail;
+
+public:
+    Inventory()
+    {
+        head = nullptr;
+        tail = nullptr;
+    }
+    // Add a new product to the inventory
+	//void addProduct(Node* addNode)
+
+
+    void addProduct(int id, string name, double price, int quantity)
+    {
+        Product *newProduct = new Product(id, name, price, quantity);
+		//Node* newNode = new Node(newProduct); create a Node using the product 
+        if (head == nullptr)
+        {
+            head = newProduct; //head = newNode
+            tail = newProduct;	//tail = newNode
+        }
+        else
+        {
+            tail->next = newProduct; //tail.setNext = newNode
+            newProduct->prev = tail; //newNode.setNext = tail
+            tail = newProduct; //tail = newNode
+        }
+    }
+
+    // Remove a product from the inventory
+    void removeProduct(int id) //void removeProduct(Node* remove)
+    {
+        if (head == nullptr)
+        {
+            cout << "Inventory is empty.\n";
+        }
+        else
+        {
+            Product *current = head; //Node* current = head
+            while (current != nullptr && current->id != id)
+            {
+                current = current->next;
+            }
+            if (current == nullptr)
+            {
+                cout << "Product not found.\n";
+            }
+            else
+            {
+                if (current == head)
+                {
+                    head = current->next;
+                    if (head != nullptr)
+                    {
+                        head->prev = nullptr;
+                    }
+                }
+                else if (current == tail)
+                {
+                    tail = current->prev;
+                    tail->next = nullptr;
+                }
+                else
+                {
+                    current->prev->next = current->next;
+                    current->next->prev = current->prev;
+                }
+                delete current;
+            }
+        }
+    }
+
+    // Display all products in the inventory
+    void displayProducts()
+    {
+        cout << left << setw(8) << " ID" << setw(35) << "Name" << setw(16) << "Price"
+             << "Quantity" << endl;
+        cout << "__________________________________________________________________\n\n";
+
+        if (head == nullptr)
+        {
+            cout << "Inventory is empty.\n";
+        }
+        else
+        {
+            Product *current = head;//Node* current = head;
+            while (current != nullptr)
+            {
+                current->print();
+                current = current->next;
+            }
+        }
+    }
+
+    // Update the price of a product
+    void updatePrice(int id, double newPrice)
+    {
+        if (head == nullptr)
+        {
+            cout << "Inventory is empty.\n";
+        }
+        else
+        {
+            Product *current = head; //Node* current = head
+            while (current != nullptr && current->id != id)
+            {
+                current = current->next;
+            }
+            if (current == nullptr)
+            {
+                cout << "Product not found.\n";
+            }
+            else
+            {
+                current->price = newPrice; //current->product->price = newPrice;
+                cout << "Price updated successfully.\n";
+            }
+        }
+    }
+
+    void updateQuantity(int id, int newQuantity)
+    {
+        if (head == nullptr)
+        {
+            cout << "Inventory is empty.\n";
+        }
+        else
+        {
+            Product *current = head; //Node* current = head
+            while (current != nullptr && current->id != id)
+            {
+                current = current->next;
+            }
+            if (current == nullptr)
+            {
+                cout << "Product not found.\n";
+            }
+            else
+            {
+                current->quantity = newQuantity;
+                cout << "Quantity updated successfully.\n";
+            }
+        }
+    }
+    // Search for a product by ID
+    void searchProduct(int id) //Node* searchProduct(int id)
+    {
+        Product *current = head; //Node* current = head
+        while (current != nullptr && current->id != id)
+        {
+            current = current->next;
+        }
+
+        if (current == nullptr)
+        {
+            cout << "Product not found.\n";
+        }
+        else
+        {
+            cout << left << setw(8) << " ID" << setw(35) << "Name" << setw(16) << "Price"
+                 << "Quantity" << endl;
+            cout << "__________________________________________________________________\n\n";
+
+            current->print();
+        }
+    }
+};
+
+class SalesList : public Inventory{ //SalesList as a derived class from the Inventory class.
+	public:
+		void printProfit(){
+
+	}
+		void 
+}
+
+int getMenuChoice()
+{
+    int choice;
+    cout << "Enter your choice (1-6): ";
+    cin >> choice;
+    cout << "\n";
+    return choice;
+}
+
+// Function to get the product details from the user
+void getProductDetails(string &name, int &id, double &price, int &quantity)
+{
+    cout << "Enter product name: ";
+    cin >> name;
+    cout << "Enter product ID: ";
+    cin >> id;
+    cout << "Enter product price: ";
+    cin >> price;
+    cout << "Enter product quantity: ";
+    cin >> quantity;
+}
+
+// Function to handle the "Add product" menu option
+void addProduct(Inventory &inventory)
+{
+    string name;
+    int id, quantity;
+    double price;
+    getProductDetails(name, id, price, quantity);
+    inventory.addProduct(id, name, price, quantity);
+}
+
+// Function to handle the "Remove product" menu option
+void removeProduct(Inventory &inventory)
+{
+    int removeId;
+    cout << "Enter product ID to remove: ";
+    cin >> removeId;
+    inventory.removeProduct(removeId);
+}
+
+// Function to handle the "Update price" menu option
+void updatePrice(Inventory &inventory)
+{
+    int id;
+    double newPrice;
+    cout << "Enter product ID to update price: ";
+    cin >> id;
+    cout << "Enter new price: ";
+    cin >> newPrice;
+    inventory.updatePrice(id, newPrice);
+}
+
+// Function to handle the "Update quantity" menu option
+void updateQuantity(Inventory &inventory)
+{
+    int id, newQuantity;
+    cout << "Enter product ID to update quantity: ";
+    cin >> id;
+    cout << "Enter new quantity: ";
+    cin >> newQuantity;
+    inventory.updateQuantity(id, newQuantity);
+}
+
+void searchProduct(Inventory &inventory)
+{
+    int searchId;
+    cout << "Enter product ID: ";
+    cin >> searchId;
+	//Node* searchNode = searchProduct(searchId);
+    inventory.searchProduct(searchId);
+	//inventory.addProduct(searchNode);
+}
+
+// Main function
+int main()
+{
+    Inventory inventory;
+    string aisle;
+
+    cout << "Which aisle inventory do you want to import? \n";
+    cout << "(1). Aisle 1: Produce\n";
+    cout << "(2). Aisle 2: Beverage\n";
+    cout << "(3). Aisle 3: Electronic\n";
+    cin >> aisle;
+
+    ifstream inFile;
+    inFile.open(aisle + ".csv");
+    if (!inFile)
+    {
+        cout << "Unable to open file " << aisle << ".txt\n";
+    }
+    else
+    {
+        string name;
+        int id, quantity;
+        double price;
+        string line;
+
+        // read each line of the CSV file
+        while (getline(inFile, line))
+        {
+            stringstream ss(line);
+            string token;
+
+            // read each token separated by commas
+            getline(ss, token, ',');
+            id = stoi(token);
+            getline(ss, name, ',');
+            price = stod(token);
+            getline(ss, token, ',');
+            quantity = stoi(token);
+
+            inventory.addProduct(id, name, price, quantity);
+        }
+        inFile.close();
+    }
+
+    int choice;
+    do
+    {
+        printMenu();
+        choice = getMenuChoice();
+
+        switch (choice)
+        {
+        case 1:
+            inventory.displayProducts();
+            break;
+        case 2:
+            addProduct(inventory);
+            break;
+        case 3:
+            removeProduct(inventory);
+            break;
+        case 4:
+            updatePrice(inventory);
+            break;
+        case 5:
+            updateQuantity(inventory);
+            break;
+        case 6:
+            searchProduct(inventory);
+            break;
+
+        case 0:
+            cout << "Exiting program...\n";
+            break;
+        default:
+            cout << "Invalid choice.\n";
+            break;
+        }
+    } while (choice != 0);
+
+    return 0;
+}
